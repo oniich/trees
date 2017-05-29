@@ -3,20 +3,20 @@ package BinarySearchTree
 import tree
 
 //Класс бинарного дерева, наследующего интерфейс tree
-class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
-    var root: Node<K, V>? = null
+class BSTtree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
+    var root: BSTnode<K, V>? = null
 
     //Вставка нового узла в дерево
     override fun insert(key: K, value: V) {
         //Условие для вставки корня
         if (this.root == null) {
-            root = Node(key, value)
+            root = BSTnode(key, value)
             return
         }
         //Ищет родителя для нового узла
-        var parent: Node<K, V>? = null
+        var parent: BSTnode<K, V>? = null
         //Бегает по дереву и сравнивает
-        var cur: Node<K, V>? = root
+        var cur: BSTnode<K, V>? = root
         while (cur != null) {
             parent = cur
 
@@ -33,16 +33,16 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
         }
 
         if (key < parent!!.key)
-            parent.left = Node(key, value, parent)
+            parent.left = BSTnode(key, value, parent)
         else
-            parent.right = Node(key, value, parent)
+            parent.right = BSTnode(key, value, parent)
     }
 
     override fun delete(key: K) {
         //Ищем ссылку на удаляемый узел, если не нашли, то выходим
-        val delNode: Node<K, V> = findNode(key) ?: return
+        val delNode: BSTnode<K, V> = findNode(key) ?: return
 
-        val delParent: Node<K, V>? = delNode.parent
+        val delParent: BSTnode<K, V>? = delNode.parent
 
         //Если у удаляемого узла нет потомков
         if (delNode.left == null && delNode.right == null) {
@@ -80,7 +80,7 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
         //Есть оба потомка
         else {
             //Ищем минимальный узел в правом поддереве для замены
-            val repla: Node<K, V> = min(delNode.right)!!
+            val repla: BSTnode<K, V> = min(delNode.right)!!
             //Заменяем ключ и значение
             delNode.key = repla.key
             delNode.value = repla.value
@@ -100,17 +100,17 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
         }
     }
 
-    override fun find(key: K): Pair<K, V>? {
+    override fun find(key: K): V? {
         val result = findNode(key)
 
         if (result == null)
             return null
         else
-            return Pair(result.key, result.value)
+            return result.value
     }
 
     //Метод поиска узла по ключу
-    private fun findNode(key: K): Node<K, V>? {
+    private fun findNode(key: K): BSTnode<K, V>? {
         var cur = root
 
         while (cur != null) {
@@ -126,7 +126,7 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
     }
 
     //Ищет минимальный узел
-    private fun min(rootNode: Node<K, V>?): Node<K, V>? {
+    private fun min(rootNode: BSTnode<K, V>?): BSTnode<K, V>? {
         if (rootNode?.left == null)
             return rootNode
         else
@@ -134,11 +134,25 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
     }
 
     //Ищет максимальный узел
-    private fun max(rootNode: Node<K, V>?): Node<K, V>? {
+    private fun max(rootNode: BSTnode<K, V>?): BSTnode<K, V>? {
         if (rootNode?.right == null)
             return rootNode
         else
             return max(rootNode.right)
+    }
+
+    fun print(height: Int = 0, node: BSTnode<K, V>? = root) {
+        if (node == null)
+            return
+
+        print(height + 1, node.right)
+
+        for (i in 1..height)
+            print(" |")
+
+        println("${node.key} (${node.value})")
+
+        print(height + 1, node.left)
     }
 
     override fun iterator(): Iterator<Pair<K, V>> {
@@ -158,7 +172,7 @@ class BinarySearchTree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
     }
 
     //Ищет узел, минимально больший текущего
-    private fun nextKey(node: Node<K, V>?): Node<K, V>? {
+    private fun nextKey(node: BSTnode<K, V>?): BSTnode<K, V>? {
         var next = node ?: return null
 
         if (next.right != null)

@@ -1,16 +1,16 @@
 package BinarySearchTree
 
 //Класс узла дерева со ссылками на родителя и двух потомков и с ключом и значением
-class Node<K: Comparable<K>, V>(var key: K, var value: V, var parent: Node<K, V>? = null) {
-    var left: Node<K, V>? = null
-    var right: Node<K, V>? = null
+class BSTnode<K: Comparable<K>, V>(var key: K, var value: V, var parent: BSTnode<K, V>? = null) {
+    var left: BSTnode<K, V>? = null
+    var right: BSTnode<K, V>? = null
 
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
-        other as Node<*, *>
+        other as BSTnode<*, *>
 
         if (key != other.key) return false
         if (value != other.value) return false
