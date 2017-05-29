@@ -95,30 +95,6 @@ class RBTtree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
         root?.col = Colour.black
     }
 
-    override fun find(key: K): Pair<K, V>? {
-        val result = findNode(key)
-
-        if (result == null)
-            return null
-        else
-            return Pair(result.key, result.value)
-    }
-
-    private fun findNode(key: K): RBTnode<K, V>? {
-        var cur = root
-
-        while (cur != null ) {
-            if (key == cur.key)
-                return cur
-
-            if (key < cur.key)
-                cur = cur.left
-            else
-                cur = cur.right
-        }
-        return null
-    }
-
     override fun delete(key: K) {
         val node = findNode(key) ?: return
 
@@ -254,6 +230,47 @@ class RBTtree<K: Comparable<K>, V>: tree<K, V>, Iterable<Pair<K, V>> {
 
         if (root == node.parent)
             root = node.parent!!.parent
+    }
+
+    override fun find(key: K): V? {
+        val result = findNode(key)
+
+        if (result == null)
+            return null
+        else
+            return result.value
+    }
+
+    private fun findNode(key: K): RBTnode<K, V>? {
+        var cur = root
+
+        while (cur != null ) {
+            if (key == cur.key)
+                return cur
+
+            if (key < cur.key)
+                cur = cur.left
+            else
+                cur = cur.right
+        }
+        return null
+    }
+
+    fun print(height: Int = 0, node: RBTnode<K, V>? = root) {
+        if (node == null)
+            return
+
+        print(height + 1, node.right)
+
+        for (i in 1..height)
+            print(" |")
+
+        if (node.col == Colour.red)
+            println(27.toChar() + "[31m${node.key} (" + node.value + ")" + 27.toChar() + "[0m")
+        else
+            println(27.toChar() + "[30m${node.key} (" + node.value + ")" + 27.toChar() + "[0m")
+
+        print(height + 1, node.left)
     }
 
     override fun iterator(): Iterator<Pair<K, V>> {
