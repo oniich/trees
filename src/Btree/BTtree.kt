@@ -21,8 +21,8 @@ class BTtree<K:Comparable<K>, V>(val t : Int = 2) : Iterable<BTnode<K, V>>{
         var i = 0
         while (i < curNode.keys.size && key > curNode.keys[i])
             ++i
-        if(curNode.keys[i] == key)
-            curNode.data[i] = data
+//        if(curNode.keys[i] == key)
+  //          curNode.data[i] = data
 
         if (curNode.isLeaf()) {
             curNode.keys.add(i, key)
@@ -202,8 +202,7 @@ class BTtree<K:Comparable<K>, V>(val t : Int = 2) : Iterable<BTnode<K, V>>{
                 root = root.offspring.removeAt(0)
     }
 
-
-    fun find(key: K, node : BTnode<K, V> = root): V? {
+    fun find(key: K, node: BTnode<K, V> = root): V? {
         var i = 0
         while (i < node.keys.size && key > node.keys[i]) {
             i++
@@ -215,6 +214,36 @@ class BTtree<K:Comparable<K>, V>(val t : Int = 2) : Iterable<BTnode<K, V>>{
             return null
 
         return find(key, node.offspring[i])
+    }
+
+    fun print(){
+        val list: Queue<BTnode<K, V>> = LinkedList()
+        val listChar: Queue<Char> = LinkedList()
+
+        list.add(root)
+        listChar.add('\n')
+
+        val specSymbol = '\n'
+
+        while (!list.isEmpty()) {
+            val curNode = list.poll()
+
+            for (key in curNode.keys)
+                print(" $key ")
+
+            if (!curNode.isLeaf()) {
+                for (child in curNode.offspring) {
+                    list.add(child)
+                    listChar.add('|')
+                }
+            }
+            if (listChar.peek() == '\n') {
+                listChar.add(specSymbol)
+                print(listChar.poll())
+            }
+            print(listChar.poll())
+        }
+
     }
 
     override fun iterator(): Iterator<BTnode<K, V>> {

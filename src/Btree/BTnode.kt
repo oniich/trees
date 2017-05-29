@@ -9,4 +9,5 @@ class BTnode<K : Comparable<K>, V> {
     fun isLeaf() = offspring.size == 0
 
     fun isEmpty() = keys.size == 0
+
 }
